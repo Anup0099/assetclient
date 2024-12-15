@@ -1,11 +1,16 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 const Card = ({ asset }) => {
-  const { id, name, category, description, status } = asset;
   const navigate = useNavigate();
+  if (!asset) {
+    return <div>Loading...</div>; // Handle missing asset gracefully
+  }
+  // const { id, name, category, description, status } = asset;
+  // console.log(asset.assetId);
+  const id = asset.assetId;
   const viewDetails = () => {
     // Navigate to the detailed view of the asset (implement navigation logic here)
-    navigate(`/assetDetails/${id}`);
+    navigate(`/assetDetails/${asset.assetId}`);
   };
 
   const requestAsset = () => {
@@ -14,18 +19,18 @@ const Card = ({ asset }) => {
   };
 
   return (
-    <div className="border border-gray-300 p-6 m-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-80 bg-white">
+    <div className="border border-gray-300  p-6 m-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-80 bg-white">
       <h2 className="text-2xl font-semibold text-gray-900 mb-2">
         {asset.name}
       </h2>
+
       <p className="text-gray-600 font-medium">Category: {asset.category}</p>
       <p className="text-gray-600 mt-2">{asset.description}</p>
       <p className="text-gray-600 mt-2">
         Status:{" "}
         <span
-          className={`font-semibold ${
-            asset.status === "Available" ? "text-green-500" : "text-red-500"
-          }`}
+          className={`font-semibold 
+          ${asset.status === "AVAILABLE" ? "text-green-500" : "text-red-500"}`}
         >
           {asset.status}
         </span>

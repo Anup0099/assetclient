@@ -1,7 +1,8 @@
 // RegisterForm.js
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-const RegisterForm = ({ onRegister }) => {
+const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Employee");
@@ -11,14 +12,31 @@ const RegisterForm = ({ onRegister }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const user = { email, password, role, name, phoneNumber, address };
-    onRegister(user);
-    setEmail("");
-    setPassword("");
-    setRole("Employee");
-    setName("");
-    setPhoneNumber("");
-    setAddress("");
+
+    // Make the POST request to register the user
+    axios
+      .post("http://localhost:8080/api/auth/register", user)
+      .then((response) => {
+        // Handle success (e.g., show a success message or redirect)
+        console.log("User registered successfully", response.data);
+        // You can also call onRegister if necessary
+        // onRegister(response.data);
+
+        // Optionally, reset the form after successful registration
+        setEmail("");
+        setPassword("");
+        setRole("Employee");
+        setName("");
+        setPhoneNumber("");
+        setAddress("");
+      })
+      .catch((error) => {
+        // Handle error (e.g., show an error message)
+        console.error("Error registering user:", error);
+        // You can also display an error message to the user
+      });
   };
 
   return (
@@ -85,8 +103,8 @@ const RegisterForm = ({ onRegister }) => {
             value={role}
             onChange={(e) => setRole(e.target.value)}
           >
-            <option value="Admin">Admin</option>
-            <option value="Employee">Employee</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="USER">USER</option>
           </select>
         </div>
         <button
