@@ -9,6 +9,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import RegisterPage from "./component/RegisterForm";
 import AssetDetailsPage from "./pages/AssetDetailsPage";
 import LoginForm from "./pages/LoginForm";
+import UserDashboard from "./component/UserDashboard";
+import AuditAsset from "./pages/AuditAsset";
+import { AssetProvider } from "./context/AssetContext.js";
+
 const theme = createTheme({
   palette: {
     primary: { main: '#1976d2' },
@@ -18,25 +22,27 @@ const theme = createTheme({
     fontFamily: 'Roboto, sans-serif',
   },
 });
+
 function App() {
   return (
-    <BrowserRouter >
-
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/available-assets" element={<AvailableAssets />} />
-          <Route path="/add-asset" element={<AddAsset />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/home" element={<Body />} />
-          <Route path="/assetDetails/:id" element={<AssetDetailsPage />} />
-        </Routes>
 
 
-      </div>
-    </BrowserRouter>
+    <div className="App">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/available-assets" element={<AvailableAssets />} />
+        <Route path="/add-asset" element={<AddAsset />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/home" element={<Body />} />
+        <Route path="/assetDetails/:id" element={<AssetDetailsPage />} />
+        <Route path="/userDashboard" element={<UserDashboard />} />
+        <Route path="/auditAsset" element={<AuditAsset />} />
+      </Routes>
+    </div>
+
+
   );
 }
 

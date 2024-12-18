@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Employee");
+  const [role, setRole] = useState("USER");
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
@@ -27,7 +27,7 @@ const RegisterForm = () => {
         // Optionally, reset the form after successful registration
         setEmail("");
         setPassword("");
-        setRole("Employee");
+        setRole("USER");
         setName("");
         setPhoneNumber("");
         setAddress("");

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const AddAsset = () => {
+const AddAsset = ({ onAssetAdded }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -39,13 +39,17 @@ const AddAsset = () => {
     axios
       .post("http://localhost:8080/api/assets", formDataToSend, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure the token is saved in localStorage
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       })
       .then((response) => {
         console.log("Asset added successfully", response);
+        // Call the onAssetAdded function passed as a prop after successful asset addition
+        if (onAssetAdded) {
+          onAssetAdded(response.data); // Pass the added asset data if needed
+        }
         navigate("/list-assets");
       })
       .catch((error) => console.log("Error adding asset", error));
@@ -91,9 +95,8 @@ const AddAsset = () => {
               required
             >
               <option value="">-- Select Category --</option>
-              <option value="ELECTRONICS">Electronics</option>
-              <option value="FURNITURE">Furniture</option>
-              <option value="VEHICLES">Vehicles</option>
+              <option value="ELECTRONICS">ELECTRONICS</option>
+              <option value="FURNITURE">FURNITURE</option>
             </select>
           </div>
           <div>
