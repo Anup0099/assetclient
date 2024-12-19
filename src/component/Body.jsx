@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import Card from "./Card";
 import axios from "axios";
 
-import { useAsset } from "../context/AssetContext";
+import { AssetContext, useAsset } from "../context/AssetContext";
 
 const Body = () => {
   const navigate = useNavigate();
   const yourToken = localStorage.getItem("token");
   // const [assets, setAssets] = useState([]);
-  const { assets, fetchAssets, loading, error } = useAsset();
-  useEffect(() => {
-    fetchAssets(); // Fetch assets when the component mounts 
-  }, []);
+  const { assets, fetchAssets, loading, error, role, token } = useAsset(AssetContext);
+  // useEffect(() => {
+  //   fetchAssets(); // Fetch assets when the component mounts
+  // }, []);
   // Function to fetch all assets
   // const fetchAssets = () => {
   //   axios
@@ -41,6 +41,16 @@ const Body = () => {
       fetchAssets();
     }
   }, [yourToken, navigate]);
+  const navigateToDashboard = () => {
+    if (role === "ADMIN") {
+      navigate("/dashboard"); // Admin dashboard
+    } else if (role === "USER") {
+      navigate("/userDashboard"); // User dashboard
+    } else {
+      console.warn("Role not found or token missing");
+      navigate("/"); // Navigate to login if no role is found or token is missing
+    }
+  };
 
   return (
     <div className="m-2 p-4">
@@ -55,10 +65,19 @@ const Body = () => {
           Learn more
         </button>
       </div>
+      <button
+        className="bg-yellow-500 text-black px-4 py-2 rounded-md font-bold hover:bg-yellow-400 transition duration-300"
+        onClick={navigateToDashboard}
+      >
+        {" "}
+        Dashboard
+      </button>
 
       <div className="font-semibold text-3xl mb-6 text-center">
         Welcome to the Asset Management Page!
       </div>
+      {loading && <div className="text-center">Loading assets...</div>}
+      {error && <div className="text-center text-red-500">{error}</div>}
 
       <div className="flex flex-wrap gap-4">
         {assets.map((asset) => (

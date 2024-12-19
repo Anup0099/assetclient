@@ -15,11 +15,14 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import LaptopIcon from "@mui/icons-material/Laptop";
 import ChairIcon from "@mui/icons-material/Chair";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   // Dummy data
   const dummyBorrowedAsset = [
     {
@@ -61,7 +64,12 @@ const Dashboard = () => {
 
   // Function to create gradient colors for the pie chart
   const createGradient = (ctx, chartArea) => {
-    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+    const gradient = ctx.createLinearGradient(
+      0,
+      chartArea.top,
+      0,
+      chartArea.bottom
+    );
     gradient.addColorStop(0, "rgba(255, 99, 132, 1)"); // Red
     gradient.addColorStop(0.5, "rgba(54, 162, 235, 1)"); // Blue
     gradient.addColorStop(1, "rgba(75, 192, 192, 1)"); // Green
@@ -70,13 +78,34 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ padding: 3, backgroundColor: "#f4f6f9", minHeight: "100vh" }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", color: "#333" }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ fontWeight: "bold", color: "#333" }}
+      >
         Admin Dashboard
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            console.log("Audit Assets");
+            navigate("/auditAsset");
+          }}
+        >
+          Audit Assets
+        </Button>
       </Typography>
+
       <Grid container spacing={4}>
         {/* Borrowed Asset Table */}
         <Grid item xs={12}>
-          <Card sx={{ padding: 3, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", borderRadius: "12px" }}>
+          <Card
+            sx={{
+              padding: 3,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              borderRadius: "12px",
+            }}
+          >
             <Typography variant="h6" gutterBottom>
               Borrowed Assets
             </Typography>
@@ -87,14 +116,20 @@ const Dashboard = () => {
                   <TableCell sx={{ fontWeight: "bold" }}>Asset Name</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Type</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Borrower</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Date Borrowed</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    Date Borrowed
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {borrowedAssets.map((asset) => (
                   <TableRow key={asset.id} hover>
                     <TableCell>
-                      {asset.type === "Electronics" ? <LaptopIcon sx={{ marginRight: 1 }} /> : <ChairIcon sx={{ marginRight: 1 }} />}
+                      {asset.type === "Electronics" ? (
+                        <LaptopIcon sx={{ marginRight: 1 }} />
+                      ) : (
+                        <ChairIcon sx={{ marginRight: 1 }} />
+                      )}
                       {asset.name}
                     </TableCell>
                     <TableCell>{asset.type}</TableCell>
@@ -109,7 +144,15 @@ const Dashboard = () => {
 
         {/* Total Borrowed Assets */}
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ padding: 3, textAlign: "center", backgroundColor: "#1976d2", color: "#fff", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
+          <Card
+            sx={{
+              padding: 3,
+              textAlign: "center",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
             <Typography variant="h6" gutterBottom>
               Total Borrowed Assets
             </Typography>
@@ -121,11 +164,24 @@ const Dashboard = () => {
 
         {/* Assets by Type (Pie Chart) */}
         <Grid item xs={12} sm={6} md={8}>
-          <Card sx={{ padding: 3, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", borderRadius: "12px" }}>
+          <Card
+            sx={{
+              padding: 3,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              borderRadius: "12px",
+            }}
+          >
             <Typography variant="h6" gutterBottom sx={{ marginBottom: 2 }}>
               Assets by Type
             </Typography>
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" , "height":"300px"}}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "300px",
+              }}
+            >
               <Pie
                 data={{
                   labels: assetTypes.map((assetType) => assetType.name),
@@ -152,7 +208,8 @@ const Dashboard = () => {
                     legend: { position: "bottom" },
                     tooltip: {
                       callbacks: {
-                        label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}`,
+                        label: (tooltipItem) =>
+                          `${tooltipItem.label}: ${tooltipItem.raw}`,
                       },
                     },
                   },

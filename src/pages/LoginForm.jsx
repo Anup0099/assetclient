@@ -13,19 +13,22 @@ const LoginForm = () => {
 
     // Sending login credentials to the backend
     axios
-      .post("http://localhost:8080/api/auth/login", credentials, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
+      .post(
+        "http://localhost:8080/api/auth/login",
+        JSON.stringify(credentials),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
           // Save the token in the local storage
           console.log("User logged in successfully", response.data);
 
           // Log the token to the console
-         
 
           // Save the token to localStorage
           localStorage.setItem("token", response.data);

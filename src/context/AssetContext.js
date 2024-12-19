@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { jwtDecode } from "jwt-decode"; // Correct import for jwtDecode
 const AssetContext = createContext();
 
 const AssetProvider = ({ children }) => {
@@ -11,9 +11,58 @@ const AssetProvider = ({ children }) => {
   const [error, setError] = useState(null); // State for error
   const [token, setToken] = useState(localStorage.getItem("token")); // Store token in state
 
+  const [role, setRole] = useState(null); // Store role in state
+
+  //getting the token from local storage
+  useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
+  //decode the token and set the role when the token changes
+  useEffect(() => {
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        console.log("Decoded token:", decodedToken);
+        setRole(decodedToken.role);
+      }
+      catch (error) {
+        console.log("Error decoding token:", error);
+        setRole(null);
+      }
+    }
+    else {
+      setRole(null);
+    }
+  }, [token])
+  //utility function for fetching all assets
+  // const navigateToDashBoard = () => {
+  //   console.log("dashboard button is clicked ", role, token);
+  //   if (role === "ADMIN" ) {
+  //     navigate("/dashboard"); // Admin dashboard
+  //   } else if (role === "USER") {
+  //     navigate("/userDashboard"); // User dashboard
+  //   } else {
+  //     console.warn("Role not found or token missing");
+  //     navigate("/login"); // Navigate to login if no role is found or token is missing
+  //   }
+  // }
+  //handle logout
+  const handleLogout = () => {
+    setToken(null); // Clear the token in context
+    localStorage.removeItem("token"); // Remove token from localStorage
+    setRole(null); // Clear the role
+    navigate("/"); // Redirect to login or home
+
+
+  }
+
   // Function to fetch all assets
   const fetchAssets = async () => {
     setLoading(true); // Set loading to true
+    setError(null); // Clear previous errors
     try {
       const response = await axios.get("http://localhost:8080/api/assets", {
         headers: {
@@ -29,6 +78,7 @@ const AssetProvider = ({ children }) => {
       setError("Failed to fetch assets. Please try again later.");
     } finally {
       setLoading(false); // Set loading back to false
+      setError(null); // Clear the error
     }
   };
 
@@ -43,7 +93,7 @@ const AssetProvider = ({ children }) => {
         withCredentials: true,
       });
       setAssets((prevAssets) => [...prevAssets, response.data]); // Update state with the new asset
-      navigate("/list-assets"); // Navigate after success
+      navigate("/home"); // Navigate after success
     } catch (error) {
       console.error("Error adding asset:", error);
     }
@@ -53,14 +103,16 @@ const AssetProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       fetchAssets();
-    } else {
-      navigate("/"); // Redirect to register if no token exists
+    }
+    else {
+      console.error("No token found. Redirecting to login.");
+      navigate("/");
     }
   }, [token]);
 
   // Provide context values to consuming components
   return (
-    <AssetContext.Provider value={{ assets, fetchAssets, addAsset, loading, error, token, setToken }}>
+    <AssetContext.Provider value={{ assets, fetchAssets, addAsset, loading, error, token, setToken, role, handleLogout }}>
       {children}
     </AssetContext.Provider>
   );
